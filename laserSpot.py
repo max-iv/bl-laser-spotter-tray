@@ -115,7 +115,7 @@ def writeSetting(setting,cameraSettings):
     cameraSettings['cropPix']       = setting['cropPix']
     return
 
-cameraSettings = {'shutter_speed': 130, 'minIntensity': 100, 'noiseFloorCut':0.10,   'cropPix':200 }
+cameraSettings = {'shutter_speed': 4000, 'minIntensity': 150, 'noiseFloorCut':0.10,   'cropPix':200 }
 camera = PiCamera()
 camera.resolution = (2944, 1920)
 camera.shutter_speed = cameraSettings['shutter_speed']

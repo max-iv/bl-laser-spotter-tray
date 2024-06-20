@@ -184,7 +184,7 @@
         "type": "function",
         "z": "7cbe116050851432",
         "name": "Init flow Variables",
-        "func": "var trayProps = {\n    box         :   env.get(\"BOX\"),\n    type        :   env.get(\"TRAYTYPE\"),\n    name        :   env.get(\"TRAYNAME\"),\n};\nflow.set('trayProps',trayProps);\nflow.set('settingInProgress', false);\nflow.set('tray', null);\nreturn {topic: \"getTrayProps\", payload: true};  \n",
+        "func": "var trayProps = {\n    box         :   env.get(\"BOX\"),\n    type        :   env.get(\"TRAYTYPE\"),\n    name        :   env.get(\"TRAYNAME\"),\n};\nflow.set('trayProps',trayProps);\nflow.set('tray', null);\nreturn {topic: \"getTrayProps\", payload: true};  \n",
         "outputs": 1,
         "timeout": "",
         "noerr": 0,
@@ -441,7 +441,7 @@
         "type": "function",
         "z": "7cbe116050851432",
         "name": "Create Setting",
-        "func": "let pythonSettingMsg = null;\nlet normalSettingMsg = null;\nlet trayControlMessage = null;\nlet tray = flow.get('tray');\nif (tray == null) return [pythonSettingMsg,normalSettingMsg,trayControlMessage];\n\nswitch (msg.payload.cube) \n{\n    case 'alias':\n        tray.alias.value = msg.payload.value;\n        normalSettingMsg = { topic: 'newData', payload: true };\n       break;\n    case 'minIntensity':\n        tray.minIntensity.value = msg.payload.value;\n        normalSettingMsg = { topic: 'newData', payload: true };\n        pythonSettingMsg = {topic:\"pythonSetting\", payload: JSON.stringify({\"command\":\"setting\",\"shutter_speed\": tray.shutter_speed.value, \"minIntensity\": tray.minIntensity.value, \"noiseFloorCut\":tray.noiseFloorCut.value,   \"cropPix\":tray.cropPix.value })};\n       break;\n    case 'noiseFloorCut':\n        tray.noiseFloorCut.value = msg.payload.value;\n        normalSettingMsg = { topic: 'newData', payload: true };\n        pythonSettingMsg = {topic:\"pythonSetting\", payload: JSON.stringify({\"command\":\"setting\",\"shutter_speed\": tray.shutter_speed.value, \"minIntensity\": tray.minIntensity.value, \"noiseFloorCut\":tray.noiseFloorCut.value,   \"cropPix\":tray.cropPix.value })};\n       break;\n    case 'cropPix':\n        tray.cropPix.value = msg.payload.value;\n        normalSettingMsg = { topic: 'newData', payload: true };\n        pythonSettingMsg = {topic:\"pythonSetting\", payload: JSON.stringify({\"command\":\"setting\",\"shutter_speed\": tray.shutter_speed.value, \"minIntensity\": tray.minIntensity.value, \"noiseFloorCut\":tray.noiseFloorCut.value,   \"cropPix\":tray.cropPix.value })};\n       break;\n    case 'shutter_speed':\n        tray.shutter_speed.value = msg.payload.value;\n        normalSettingMsg = { topic: 'newData', payload: true };\n        pythonSettingMsg = {topic:\"pythonSetting\", payload: JSON.stringify({\"command\":\"setting\",\"shutter_speed\": tray.shutter_speed.value, \"minIntensity\": tray.minIntensity.value, \"noiseFloorCut\":tray.noiseFloorCut.value,   \"cropPix\":tray.cropPix.value })};\n       break;\n    case 'trayControl':\n        switch(msg.payload.value)\n        {\n            case 0:\n                tray.trayControl.value = 0;\n                break;\n            case 1:\n                tray.trayControl.value = -1;\n                break;\n            case 2:\n                if (tray.trayControl.value > 0)\n                {\n                    tray.trayControl.value = 2;\n                    let trayProps  = flow.get('trayProps');\n                    node.warn(\"Asking for tray from database\");\n                    trayControlMessage =\n                    {\n                        topic: trayProps.box + '/tray/' + trayProps.type + '/' + trayProps.name + '/echo',\n                        payload: JSON.stringify({ topic: trayProps.box + '/tray/' + trayProps.type + '/' + trayProps.name + '/setting/echo' })\n                    };\n                }\n                break;\n            default:\n                tray.trayControl.value = 0;\n                break;\n        }\n        normalSettingMsg = { topic: 'newData', payload: true };\n       break;\n    default:\n        break;\n}\nflow.set('settingInProgress', false);\nreturn [pythonSettingMsg,normalSettingMsg,trayControlMessage];\n\n",
+        "func": "let pythonSettingMsg = null;\nlet normalSettingMsg = null;\nlet trayControlMessage = null;\nlet tray = flow.get('tray');\nif (tray == null) return [pythonSettingMsg,normalSettingMsg,trayControlMessage];\n\nswitch (msg.payload.cube) \n{\n    case 'alias':\n        tray.alias.value = msg.payload.value;\n        normalSettingMsg = { topic: 'newData', payload: true };\n       break;\n    case 'minIntensity':\n        tray.minIntensity.value = msg.payload.value;\n        normalSettingMsg = { topic: 'newData', payload: true };\n        pythonSettingMsg = {topic:\"pythonSetting\", payload: JSON.stringify({\"command\":\"setting\",\"shutter_speed\": tray.shutter_speed.value, \"minIntensity\": tray.minIntensity.value, \"noiseFloorCut\":tray.noiseFloorCut.value,   \"cropPix\":tray.cropPix.value })};\n       break;\n    case 'noiseFloorCut':\n        tray.noiseFloorCut.value = msg.payload.value;\n        normalSettingMsg = { topic: 'newData', payload: true };\n        pythonSettingMsg = {topic:\"pythonSetting\", payload: JSON.stringify({\"command\":\"setting\",\"shutter_speed\": tray.shutter_speed.value, \"minIntensity\": tray.minIntensity.value, \"noiseFloorCut\":tray.noiseFloorCut.value,   \"cropPix\":tray.cropPix.value })};\n       break;\n    case 'cropPix':\n        tray.cropPix.value = msg.payload.value;\n        normalSettingMsg = { topic: 'newData', payload: true };\n        pythonSettingMsg = {topic:\"pythonSetting\", payload: JSON.stringify({\"command\":\"setting\",\"shutter_speed\": tray.shutter_speed.value, \"minIntensity\": tray.minIntensity.value, \"noiseFloorCut\":tray.noiseFloorCut.value,   \"cropPix\":tray.cropPix.value })};\n       break;\n    case 'shutter_speed':\n        tray.shutter_speed.value = msg.payload.value;\n        normalSettingMsg = { topic: 'newData', payload: true };\n        pythonSettingMsg = {topic:\"pythonSetting\", payload: JSON.stringify({\"command\":\"setting\",\"shutter_speed\": tray.shutter_speed.value, \"minIntensity\": tray.minIntensity.value, \"noiseFloorCut\":tray.noiseFloorCut.value,   \"cropPix\":tray.cropPix.value })};\n       break;\n    case 'trayControl':\n        switch(msg.payload.value)\n        {\n            case 0:\n                tray.trayControl.value = 0;\n                break;\n            case 1:\n                tray.trayControl.value = -1;\n                break;\n            case 2:\n                if (tray.trayControl.value > 0)\n                {\n                    tray.trayControl.value = 2;\n                    let trayProps  = flow.get('trayProps');\n                    node.warn(\"Asking for tray from database\");\n                    trayControlMessage =\n                    {\n                        topic: trayProps.box + '/tray/' + trayProps.type + '/' + trayProps.name + '/echo',\n                        payload: JSON.stringify({ topic: trayProps.box + '/tray/' + trayProps.type + '/' + trayProps.name + '/setting/echo' })\n                    };\n                }\n                break;\n            default:\n                tray.trayControl.value = 0;\n                break;\n        }\n        normalSettingMsg = { topic: 'newData', payload: true };\n       break;\n    default:\n        break;\n}\nreturn [pythonSettingMsg,normalSettingMsg,trayControlMessage];\n\n",
         "outputs": 3,
         "timeout": "",
         "noerr": 0,
@@ -813,7 +813,7 @@
         "virtualenv": "",
         "continuous": true,
         "stdInData": true,
-        "x": 540,
+        "x": 580,
         "y": 680,
         "wires": [
             [
@@ -826,13 +826,14 @@
         "type": "function",
         "z": "7cbe116050851432",
         "name": "Remove CR",
-        "func": "msg.payload = msg.payload.split(\"\\n\")[0];\nreturn msg;\n/*\nlet traceTest = msg.payload.substring(0,5);\nif (traceTest != 'trace')\n{\n    msg.payload = msg.payload.split(\"\\n\")[0];\n    return [msg,null];\n}\nvar dataView = new DataView(new ArrayBuffer(2));\nvar ndataPts = msg.payload.length - 7;\nlet charArray = [];\nfor (let ii = 0; ii < ndataPts; ++ii)\n{\n    charArray.push(msg.payload.charCodeAt(ii + 6));\n}\n\nndataPts = ndataPts / 2;\ntrace = [];\nfor (let ii = 0; ii < ndataPts; ++ii)\n{\n    dataView.setUint8(0, charArray[ii * 2]);\n    dataView.setUint8(1, charArray[ii * 2 + 1]);\n    trace.push(dataView.getInt16(0 , true));\n}\n\nreturn [null,{topic:'trace', payload:{value:trace}}];\n*/",
+        "func": "msg.payload = msg.payload.split(\"\\n\")[0];\nreturn msg;\n",
         "outputs": 1,
+        "timeout": "",
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 710,
+        "x": 750,
         "y": 680,
         "wires": [
             [
@@ -848,11 +849,11 @@
         "property": "payload",
         "action": "obj",
         "pretty": false,
-        "x": 850,
+        "x": 890,
         "y": 680,
         "wires": [
             [
-                "0823b1b2f706201d"
+                "e2f4a2b979516ce1"
             ]
         ]
     },
@@ -870,14 +871,14 @@
                 "vt": "str"
             }
         ],
-        "repeat": "4",
+        "repeat": "",
         "crontab": "",
         "once": true,
         "onceDelay": "14",
-        "topic": "",
+        "topic": "init",
         "payload": "",
         "payloadType": "date",
-        "x": 150,
+        "x": 160,
         "y": 680,
         "wires": [
             [
@@ -890,47 +891,18 @@
         "type": "function",
         "z": "7cbe116050851432",
         "name": "Get Readings",
-        "func": "if (flow.get('settingInProgress')) return null;\nreturn {topic:\"readingMsg\",payload:JSON.stringify({\"command\":\"reading\"})};",
+        "func": "let settingCommands = context.get(\"settingCommands\");\nlet newMsg = null;\nif (msg.topic == \"pythonSetting\")\n{\n    settingCommands.push(JSON.parse(JSON.stringify(msg.payload)));\n}\nif ((msg.topic == \"settingComplete\") || (msg.topic == \"readingComplete\"))\n{\n    if (settingCommands.length > 0)\n    {\n        let settingMsg = settingCommands.shift();\n        newMsg = {topic: \"settingMsg\", payload:settingMsg};\n    }\n    else\n    {\n        newMsg = {topic:\"readingMsg\",payload:JSON.stringify({\"command\":\"reading\"})};\n    }\n}\nif (msg.topic == \"init\") newMsg = {topic:\"readingMsg\",payload:JSON.stringify({\"command\":\"reading\"})};\nreturn newMsg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
-        "initialize": "",
+        "initialize": "// Code added here will be run once\n// whenever the node is started.\ncontext.set(\"settingCommands\",[]);",
         "finalize": "",
         "libs": [],
-        "x": 320,
+        "x": 360,
         "y": 680,
         "wires": [
             [
                 "48adaa828fec20b3"
-            ]
-        ]
-    },
-    {
-        "id": "80aa67d38842d185",
-        "type": "inject",
-        "z": "7cbe116050851432",
-        "name": "",
-        "props": [
-            {
-                "p": "payload"
-            },
-            {
-                "p": "topic",
-                "vt": "str"
-            }
-        ],
-        "repeat": "",
-        "crontab": "",
-        "once": true,
-        "onceDelay": "10",
-        "topic": "",
-        "payload": "",
-        "payloadType": "date",
-        "x": 150,
-        "y": 740,
-        "wires": [
-            [
-                "ee95fe9848648fbd"
             ]
         ]
     },
@@ -946,8 +918,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1180,
-        "y": 700,
+        "x": 1360,
+        "y": 680,
         "wires": [
             [
                 "a64d31f1f50e0f29"
@@ -964,24 +936,16 @@
         "rules": [
             {
                 "t": "eq",
-                "v": "setting",
-                "vt": "str"
-            },
-            {
-                "t": "eq",
                 "v": "reading",
                 "vt": "str"
             }
         ],
         "checkall": "true",
         "repair": false,
-        "outputs": 2,
-        "x": 990,
+        "outputs": 1,
+        "x": 1190,
         "y": 680,
         "wires": [
-            [
-                "785ac40c5da0c1df"
-            ],
             [
                 "c67ad16e774ddbe7"
             ]
@@ -999,8 +963,8 @@
         "initialize": "// Code added here will be run once\n// whenever the node is started.\ncontext.set('lastAlarm', -1);",
         "finalize": "",
         "libs": [],
-        "x": 1400,
-        "y": 700,
+        "x": 1580,
+        "y": 680,
         "wires": [
             [
                 "825424632004f63e"
@@ -1016,8 +980,8 @@
         "links": [
             "e90864c178e3c08e"
         ],
-        "x": 1535,
-        "y": 700,
+        "x": 1725,
+        "y": 680,
         "wires": []
     },
     {
@@ -1026,44 +990,59 @@
         "z": "7cbe116050851432",
         "name": "Python Interface in",
         "links": [
-            "8ae00ce2e8187ccd"
+            "8ae00ce2e8187ccd",
+            "ef3c5e0f7db0d6c9"
         ],
         "x": 75,
         "y": 620,
         "wires": [
             [
-                "34b7baf07e2e139b"
+                "ee95fe9848648fbd"
             ]
         ]
     },
     {
-        "id": "34b7baf07e2e139b",
+        "id": "e2f4a2b979516ce1",
         "type": "function",
         "z": "7cbe116050851432",
-        "name": "Stop Readings",
-        "func": "flow.set('settingInProgress', true)\nreturn msg;",
+        "name": "createTopic",
+        "func": "msg.topic = msg.payload.command + \"Complete\";\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 200,
-        "y": 620,
+        "x": 1030,
+        "y": 680,
         "wires": [
             [
-                "59e75a67427f98e7"
+                "0823b1b2f706201d",
+                "c94c789d3af19a64"
             ]
         ]
     },
     {
-        "id": "59e75a67427f98e7",
+        "id": "ef3c5e0f7db0d6c9",
+        "type": "link out",
+        "z": "7cbe116050851432",
+        "name": "python script complete",
+        "mode": "link",
+        "links": [
+            "80fcd16594d8320d"
+        ],
+        "x": 1305,
+        "y": 780,
+        "wires": []
+    },
+    {
+        "id": "c94c789d3af19a64",
         "type": "delay",
         "z": "7cbe116050851432",
         "name": "",
         "pauseType": "delay",
-        "timeout": "4",
-        "timeoutUnits": "seconds",
+        "timeout": "200",
+        "timeoutUnits": "milliseconds",
         "rate": "1",
         "nbRateUnits": "1",
         "rateUnits": "second",
@@ -1073,28 +1052,12 @@
         "drop": false,
         "allowrate": false,
         "outputs": 1,
-        "x": 360,
-        "y": 620,
+        "x": 1210,
+        "y": 780,
         "wires": [
             [
-                "48adaa828fec20b3"
+                "ef3c5e0f7db0d6c9"
             ]
         ]
-    },
-    {
-        "id": "785ac40c5da0c1df",
-        "type": "function",
-        "z": "7cbe116050851432",
-        "name": "Continue Readings",
-        "func": "flow.set('settingInProgress', false)\nreturn null;",
-        "outputs": 0,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 1190,
-        "y": 620,
-        "wires": []
     }
 ]
